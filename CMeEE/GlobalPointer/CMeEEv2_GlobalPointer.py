@@ -1,12 +1,13 @@
 #! -*- coding: utf-8 -*-
 # 用GlobalPointer做中文命名实体识别
+# 数据集 https://tianchi.aliyun.com/dataset/dataDetail?dataId=95414
 
 import json
 import numpy as np
 from bert4keras.backend import keras, K
 from bert4keras.backend import multilabel_categorical_crossentropy
-#from bert4keras.layers import GlobalPointer
-from bert4keras.layers import EfficientGlobalPointer as GlobalPointer
+from bert4keras.layers import GlobalPointer
+#from bert4keras.layers import EfficientGlobalPointer as GlobalPointer
 from bert4keras.models import build_transformer_model
 from bert4keras.tokenizers import Tokenizer
 from bert4keras.optimizers import Adam
@@ -15,16 +16,16 @@ from bert4keras.snippets import open, to_array
 from keras.models import Model
 from tqdm import tqdm
 
-maxlen = 256
-epochs = 30
-batch_size = 32
-learning_rate = 2e-5 # 6e-5, 2e-5
+maxlen = 512
+epochs = 20
+batch_size = 4
+learning_rate = 2e-5
 categories = set()
 
 # bert配置
-config_path = '../../nlp_model/chinese_bert_L-12_H-768_A-12/bert_config.json'
-checkpoint_path = '../../nlp_model/chinese_bert_L-12_H-768_A-12/bert_model.ckpt'
-dict_path = '../../nlp_model/chinese_bert_L-12_H-768_A-12/vocab.txt'
+config_path = '../../../nlp_model/chinese_bert_L-12_H-768_A-12/bert_config.json'
+checkpoint_path = '../../../nlp_model/chinese_bert_L-12_H-768_A-12/bert_model.ckpt'
+dict_path = '../../../nlp_model/chinese_bert_L-12_H-768_A-12/vocab.txt'
 
 def load_data(filename):
     """加载数据
@@ -43,8 +44,10 @@ def load_data(filename):
 
 
 # 标注数据
-train_data = load_data('./data/train.json')
-valid_data = load_data('./data/dev.json')
+train_data = load_data('../../dataset/3.0/CMeEE-V2/CMeEE-V2_train.json')
+#train_data = load_data('../../dataset/ner/CMeEE_train_plus.json')
+#train_data = load_data('../../dataset/ner/split_CMeEE_train.json')
+valid_data = load_data('../../dataset/3.0/CMeEE-V2/CMeEE-V2_dev.json')
 categories = list(sorted(categories))
 
 # 建立分词器
@@ -158,7 +161,7 @@ class Evaluator(keras.callbacks.Callback):
         # 保存最优
         if f1 >= self.best_val_f1:
             self.best_val_f1 = f1
-            model.save_weights('./imcs-ner-v2_gp_best_f1_%.5f.weights'%f1)
+            model.save_weights('./cmeee-v2_best_model_globalpointer_f1_%.5f.weights'%f1)
         print(
             'valid:  f1: %.5f, precision: %.5f, recall: %.5f, best f1: %.5f\n' %
             (f1, precision, recall, self.best_val_f1)
@@ -167,36 +170,20 @@ class Evaluator(keras.callbacks.Callback):
 
 def predict_to_file(in_file, out_file):
     """预测到文件
+    可以提交到 https://tianchi.aliyun.com/dataset/dataDetail?dataId=95414
     """
-    D = {}
     data = json.load(open(in_file))
-
-    for d in tqdm(data.keys(), ncols=100):
-        D[d] = {}
-        for d2 in data[d]['dialogue']:
-
-            # 初始化 BIO 标记
-            label = ['O']*len(d2['sentence'])
-
-            # 识别
-            entities = NER.recognize(d2['sentence'])
-            for e in entities:
-                #d2['entities'].append({
-                #    'start_idx': e[0],
-                #    'end_idx': e[1],
-                #    'type': e[2]
-                #})
-
-                # 生成 BIO标记
-                label[e[0]] = 'B-'+e[2]
-                for x in range(e[0]+1, e[1]+1):
-                    label[x] = 'I-'+e[2]
-
-            D[d][d2['sentence_id']] = ' '.join(label)
-
-    # 保存json格式
+    for d in tqdm(data, ncols=100):
+        d['entities'] = []
+        entities = NER.recognize(d['text'])
+        for e in entities:
+            d['entities'].append({
+                'start_idx': e[0],
+                'end_idx': e[1],
+                'type': e[2]
+            })
     json.dump(
-        D,
+        data,
         open(out_file, 'w', encoding='utf-8'),
         indent=4,
         ensure_ascii=False
@@ -208,8 +195,6 @@ if __name__ == '__main__':
     evaluator = Evaluator()
     train_generator = data_generator(train_data, batch_size)
 
-    #model.load_weights('./imcs-ner_gp_best_f1_0.90757.weights')
-
     model.fit(
         train_generator.forfit(),
         steps_per_epoch=len(train_generator),
@@ -218,5 +203,6 @@ if __name__ == '__main__':
     )
 
 else:
-    model.load_weights('./imcs-ner-v2_gp_best_f1_0.89685.weights')
-    predict_to_file('../dataset/3.0/IMCS-V2/IMCS-V2_test.json', './IMCS-V2-NER_test.json')
+
+    model.load_weights('cmeee-v2_best_model_globalpointer_f1_0.72614.weights')
+    predict_to_file('../../dataset/3.0/CMeEE-V2/CMeEE-V2_test.json', 'CMeEE-V2_test.json')

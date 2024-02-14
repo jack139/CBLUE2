@@ -24,6 +24,8 @@ import json
 
 def convert(infile, outfile, include_blank=True):
 
+    print(f"{infile} --> {outfile}")
+
     D = []
     text = ''
     entities = []
@@ -99,5 +101,7 @@ def convert(infile, outfile, include_blank=True):
 
 
 if __name__ == '__main__':
-    convert('../dataset/IMCS-IR/new_split/IMCS_train.json', './data/train.json', True)
-    convert('../dataset/IMCS-IR/new_split/IMCS_dev.json', './data/dev.json')
+    convert('../dataset/IMCS-IR/new_split/data/IMCS-V2_train.json', './data/train.json', True)
+    convert('../dataset/IMCS-IR/new_split/data/IMCS-V2_dev.json', './data/dev.json')
+    #convert('../dataset/3.0/IMCS-V2/IMCS-V2_train.json', './data/train.json', True)
+    #convert('../dataset/3.0/IMCS-V2/IMCS-V2_dev.json', './data/dev.json')

@@ -1,4 +1,13 @@
+import json
 
+with open('../dataset/3.0/IMCS-V2/mappings.json', 'r', encoding='utf-8') as f:
+    sym2id, id2sym, bio2id, id2bio, sl2id, id2sl = json.load(f)
+
+# 其中 sym2id 和 id2sym 分别是 症状 到 症状id 和 症状id 到 症状的映射；
+# bio2id 和 id2bio 分别是 BIO-tag 到 BIO-tag id 和 BIO-tag id 到 BIO-tag 的映射；
+# sl2id 和 id2sl 分别是 症状标签 到 症状标签-id 和 症状标签-id 到 症状标签 的映射。
+
+'''
 norms = [
     "咳嗽",
     "发热",
@@ -332,3 +341,4 @@ norms = [
     "肌张力增高",
     "黄疸性肝炎",
 ]
+'''

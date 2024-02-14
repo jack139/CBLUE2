@@ -15,16 +15,21 @@ from bert4keras.snippets import open, to_array
 from keras.models import Model
 from tqdm import tqdm
 
+import jieba
+jieba.initialize()
+
+
 maxlen = 256
 epochs = 30
-batch_size = 32
-learning_rate = 2e-5 # 6e-5, 2e-5
+batch_size = 16
+learning_rate = 1e-5 # 6e-5, 2e-5
 categories = set()
 
-# bert配置
-config_path = '../../nlp_model/chinese_bert_L-12_H-768_A-12/bert_config.json'
-checkpoint_path = '../../nlp_model/chinese_bert_L-12_H-768_A-12/bert_model.ckpt'
-dict_path = '../../nlp_model/chinese_bert_L-12_H-768_A-12/vocab.txt'
+
+# large
+config_path = '../../nlp_model/chinese_roberta_wwm_large_ext_L-24_H-1024_A-16/bert_config.json'
+checkpoint_path = '../../nlp_model/chinese_roberta_wwm_large_ext_L-24_H-1024_A-16/bert_model.ckpt'
+dict_path = '../../nlp_model/chinese_roberta_wwm_large_ext_L-24_H-1024_A-16/vocab.txt'
 
 def load_data(filename):
     """加载数据
@@ -48,7 +53,11 @@ valid_data = load_data('./data/dev.json')
 categories = list(sorted(categories))
 
 # 建立分词器
-tokenizer = Tokenizer(dict_path, do_lower_case=True)
+tokenizer = Tokenizer(
+    dict_path,
+    do_lower_case=True,
+    pre_tokenize=lambda s: jieba.cut(s, HMM=False)
+)
 
 
 class data_generator(DataGenerator):
@@ -158,7 +167,7 @@ class Evaluator(keras.callbacks.Callback):
         # 保存最优
         if f1 >= self.best_val_f1:
             self.best_val_f1 = f1
-            model.save_weights('./imcs-ner-v2_gp_best_f1_%.5f.weights'%f1)
+            model.save_weights('./imcs-ner-v2_gp_roberta_f1_%.5f.weights'%f1)
         print(
             'valid:  f1: %.5f, precision: %.5f, recall: %.5f, best f1: %.5f\n' %
             (f1, precision, recall, self.best_val_f1)
@@ -208,7 +217,7 @@ if __name__ == '__main__':
     evaluator = Evaluator()
     train_generator = data_generator(train_data, batch_size)
 
-    #model.load_weights('./imcs-ner_gp_best_f1_0.90757.weights')
+    #model.load_weights('imcs-ner-v2_gp_roberta_f1_0.89649.weights')
 
     model.fit(
         train_generator.forfit(),
@@ -218,5 +227,5 @@ if __name__ == '__main__':
     )
 
 else:
-    model.load_weights('./imcs-ner-v2_gp_best_f1_0.89685.weights')
+    model.load_weights('imcs-ner-v2_gp_roberta_f1_0.89709.weights')
     predict_to_file('../dataset/3.0/IMCS-V2/IMCS-V2_test.json', './IMCS-V2-NER_test.json')

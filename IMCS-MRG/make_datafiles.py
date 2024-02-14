@@ -199,13 +199,19 @@ def write_to_bin(mode, in_file, out_file, makevocab=False):
                 writer.write(word + ' ' + str(count) + '\n')
         print("完成字典 vocab 的创建和保存\n")
 
+
+def gen_report(rdict):
+    kk = ["主诉","现病史","辅助检查", "既往史", "诊断", "建议"]
+    return "\n".join([f"({n+1}){k}：{rdict[k]}" for n, k in enumerate(kk)])
+
+
 # 对json文件进行一次处理
 def deal_with_json():
     #f_train = '../dataset/IMCS-MRG/IMCS_train.json'
     #f_dev = '../dataset/IMCS-MRG/IMCS_dev.json'
-    f_train = '../dataset/IMCS-IR/new_split/IMCS_train.json'
-    f_dev = '../dataset/IMCS-IR/new_split/IMCS_dev.json'
-    f_test = '../dataset/IMCS-MRG/IMCS_test.json'
+    f_train = '../dataset/IMCS-IR/new_split/data/IMCS-V2_train.json'
+    f_dev = '../dataset/IMCS-IR/new_split/data/IMCS-V2_dev.json'
+    f_test = '../dataset/3.0/IMCS-V2/IMCS-V2_test.json'
     with open(f_train,'r',encoding='utf8') as fr:
         data_train = json.load(fr)
     with open(f_dev,'r',encoding='utf8') as fr:
@@ -221,8 +227,8 @@ def deal_with_json():
         self_report = data_train[eid]['self_report']
         dialogue_list = [x['sentence'] for x in data_train[eid]['dialogue']]
         dialogue = '||'.join(dialogue_list)
-        report1 = data_train[eid]['report'][0]
-        report2 = data_train[eid]['report'][1]
+        report1 = gen_report(data_train[eid]['report'][0])
+        report2 = gen_report(data_train[eid]['report'][1])
         #split = df_split[df_split['example_id']==int(eid)]['split'].values[0]
         split = 'train'
         id_report.append([eid,self_report,dialogue,report1,report2,split])
@@ -230,8 +236,8 @@ def deal_with_json():
         self_report = data_dev[eid]['self_report']
         dialogue_list = [x['sentence'] for x in data_dev[eid]['dialogue']]
         dialogue = '||'.join(dialogue_list)
-        report1 = data_dev[eid]['report'][0]
-        report2 = data_dev[eid]['report'][1]
+        report1 = gen_report(data_dev[eid]['report'][0])
+        report2 = gen_report(data_dev[eid]['report'][1])
         split = 'dev'
         id_report.append([eid,self_report,dialogue,report1,report2,split])
     for eid in eids_test:
