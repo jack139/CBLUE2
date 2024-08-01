@@ -1,4 +1,4 @@
-## CBLUE 2/3 任务实现
+# CBLUE 2/3 任务实现
 
 [CBLUE 中文生物医学语言理解评测](https://tianchi.aliyun.com/cblue)
 
@@ -6,7 +6,7 @@
 
 
 
-### CBLUE 2 内容
+## CBLUE 2 内容
 
 - [x] 中文医学命名实体识别（CMeEE）
 - [x] 中文医学文本实体关系抽取（CMeIE）
@@ -26,7 +26,7 @@
 
 
 
-### CBLUE 3 新增
+## CBLUE 3 新增
 
 - [x] 中文医学命名实体识别V2（CMeEE-V2）
 - [x] 中文医学文本实体关系抽取V2（CMeIE-V2）
@@ -40,6 +40,7 @@
 
 
 
+## 打榜得分
 
 | 数据集/语言模型 | BERT-base | RoBERTa-large | Other models |
 | --------------- | :-------: | :-------: | :-------: |
