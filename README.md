@@ -62,7 +62,7 @@
 | CMeEE-V2-F1     |  73.2150  |  74.0448  |           |
 | CMeIE-V2-F1     |  52.1963  |  54.8591  |           |
 | CMedCausal-F1   |  32.6060  |  36.2170  |           |
-| KUAKE-IR-MRR@10 |  21.5994  |           |           |
+| KUAKE-IR-MRR@10 |  21.5994  |           |  30.5164  |
 | IMCS-V2-NER-F1  |  88.2173  |  88.0096  |           |
 | IMCS-V2-DAC-Acc |  82.6112  |           |           |
 | IMCS-V2-SR-Utterance-Level-F1 |  64.8370  |  68.2290  |         |
