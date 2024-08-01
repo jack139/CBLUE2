@@ -37,3 +37,34 @@
 - [x] 症状的归一化标签和类别标签预测V2（IMCS-V2-SR）
 - [x] 自动生成诊疗报告V2（IMCS-V2-MRG）
 - [x] 医疗文本诊疗决策树抽取（Text2DT）
+
+
+
+
+| 数据集/语言模型 | BERT-base | RoBERTa-large | Other models |
+| --------------- | :-------: | :-------: | :-------: |
+| CMeEE-F1        |  67.840   |           |           |
+| CMeIE-F1        |  56.569   |  59.340   |           |
+| CHIP-CDN-F1     |  60.809   |           |           |
+| CHIP-CTC-F1     |  70.433   |           |           |
+| CHIP-STS-F1     |  85.310   |  84.914   |           |
+| KUAKE-QIC-Acc   |  85.908   |           |           |
+| KUAKE-QTR-Acc   |  61.154   |           |           |
+| KUAKE-QQR-Acc   |  85.026   |           |           |
+| MedDG-Ave       |           |           |  15.827   |
+| CHIP-MDCFNPC-F1 |  77.908   |           |           |
+| CHIP-CDEE-F1    |  41.198   |  50.2175  |           |
+| IMCS-NER-F1     |  92.028   |           |           |
+| IMCS-SR-F1      |  64.665   |  65.662   |           |
+| IMCS-MRG-Ave    |           |           |  59.640   |
+| IMCS-IR-F1      |  77.887   |           |           |
+| CMeEE-V2-F1     |  73.2150  |  74.0448  |           |
+| CMeIE-V2-F1     |  52.1963  |  54.8591  |           |
+| CMedCausal-F1   |  32.6060  |  36.2170  |           |
+| KUAKE-IR-MRR@10 |  21.5994  |           |           |
+| IMCS-V2-NER-F1  |  88.2173  |  88.0096  |           |
+| IMCS-V2-DAC-Acc |  82.6112  |           |           |
+| IMCS-V2-SR-Utterance-Level-F1 |  64.8370  |  68.2290  |         |
+| IMCS-V2-SR-Dialog-Level-F1    |  62.3330  |  65.1595  |         |
+| IMCS-V2-MRG-Ave |           |           |  51.1026  |
+| Text2DT_Tree_Level_Score      |  47.9338  |           |         |
